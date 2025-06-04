@@ -1,2 +1,3 @@
-# pf25b03
-ES234211 - Programming Fundamental Mini Project
+# ES234211 - Programming Fundamental Mini Project
+Class B, Group 3
+Team Members:
