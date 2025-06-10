@@ -154,7 +154,8 @@ public class TTTConsoleNonOO {
             }
             System.out.println();
             if (row != ROWS - 1) {
-                System.out.println("-----------"); // print horizontal partition
+                System.out.println("-----------");
+                System.out.println("-----------");// print horizontal partition
             }
         }
         System.out.println();
@@ -168,4 +169,5 @@ public class TTTConsoleNonOO {
             case NO_SEED: System.out.print("   "); break;
         }
     }
+
 }
