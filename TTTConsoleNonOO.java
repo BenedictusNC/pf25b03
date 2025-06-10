@@ -169,7 +169,6 @@ public class TTTConsoleNonOO {
             case NO_SEED: System.out.print("   "); break;
 
         }
-        System.out.println("adha");
     }
 
 }
