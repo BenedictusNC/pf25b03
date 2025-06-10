@@ -60,7 +60,7 @@ public class TTTConsoleNonOO {
                     System.out.println("Bye!");
                     System.exit(0);  // terminate the program
                 } else if(ans == 'y' || ans == 'Y'){
-                    invalid = false;
+                    invalid = true;
                 } else{
                     System.out.println("Invalid input, try again!");
                 }
