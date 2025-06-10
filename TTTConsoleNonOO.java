@@ -52,19 +52,19 @@ public class TTTConsoleNonOO {
                 // Switch currentPlayer
                 currentPlayer = (currentPlayer == CROSS) ? NOUGHT : CROSS;
             } while (currentState == PLAYING); // repeat if not game over
-//            boolean invalid = false;
-//            do{
-//                System.out.print("Play again (y/n)? ");
-//                char ans = in.next().charAt(0);
-//                if (ans == 'n' || ans == 'N') {
-//                    System.out.println("Bye!");
-//                    System.exit(0);  // terminate the program
-//                } else if(ans == 'y' || ans == 'Y'){
-//                    invalid = false;
-//                } else{
-//                    System.out.println("Invalid input, try again!");
-//                }
-//            } while(invalid);
+            boolean invalid = false;
+            do{
+                System.out.print("Play again (y/n)? ");
+                char ans = in.next().charAt(0);
+                if (ans == 'n' || ans == 'N') {
+                    System.out.println("Bye!");
+                    System.exit(0);  // terminate the program
+                } else if(ans == 'y' || ans == 'Y'){
+                    invalid = false;
+                } else{
+                    System.out.println("Invalid input, try again!");
+                }
+            } while(invalid);
         }while (true);
     }
 
