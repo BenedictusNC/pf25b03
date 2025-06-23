@@ -60,14 +60,24 @@ public class GameMain {
 
     /** Perform one-time initialization tasks */
     public void initGame() {
-        board = new Board();  // allocate game-board
+        board = new Board();
+        // allocate game-board
     }
 
     /** Reset the game-board contents and the current states, ready for new game */
     public void newGame() {
         board.newGame();  // clear the board contents
-        currentPlayer = Seed.CROSS;   // CROSS plays first
+        currentPlayer = (Math.random() < 0.5) ? Seed.CROSS : Seed.NOUGHT;
+
         currentState = State.PLAYING; // ready to play
+
+        // Display who starts first
+        if (currentPlayer == Seed.CROSS) {
+            System.out.println("Roulette decided: Player 'X' starts first!");
+        } else {
+            System.out.println("Roulette decided: Player 'O' starts first!");
+        }
+
     }
 
     /** The currentPlayer makes one move.
