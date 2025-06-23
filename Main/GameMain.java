@@ -1,36 +1,22 @@
 package Main;
 
 import java.util.Scanner;
-
-import static Main.Board.COLS;
-import static Main.Board.ROWS;
-import static Main.Seed.*;
-import static Main.State.PLAYING;
-
 /**
  * The main class for the Tic-Tac-Toe (Console-OO, non-graphics version)
  * It acts as the overall controller of the game.
  */
 public class GameMain {
     // Define properties
-    /**
-     * The game board
-     */
-    private static Board board;
-    /**
-     * The current state of the game (of enum State)
-     */
-    private static State currentState;
-    /**
-     * The current player (of enum Seed)
-     */
-    private static Seed currentPlayer;
+    /** The game board */
+    private Board board;
+    /** The current state of the game (of enum State) */
+    private State currentState;
+    /** The current player (of enum Seed) */
+    private Seed  currentPlayer;
 
     private static Scanner in = new Scanner(System.in);
 
-    /**
-     * Constructor to setup the game
-     */
+    /** Constructor to setup the game */
     public GameMain() {
         // Perform one-time initialization tasks
         initGame();
@@ -54,49 +40,34 @@ public class GameMain {
                     System.out.println("It's Draw!\nBye!");
                 }
                 // Switch currentPlayer
-                currentPlayer = (currentPlayer == CROSS) ? NOUGHT : CROSS;
-            } while (currentState == PLAYING);  // repeat until game over
+                currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+            } while (currentState == State.PLAYING);  // repeat until game over
             boolean invalid = false;
-            do {
+            do{
                 System.out.print("Play again (y/n)? ");
                 char ans = in.next().charAt(0);
                 if (ans == 'n' || ans == 'N') {
                     System.out.println("Bye!");
                     System.exit(0);  // terminate the program
-                } else if (ans == 'y' || ans == 'Y') {
+                } else if(ans == 'y' || ans == 'Y'){
                     invalid = true;
-                } else {
+                } else{
                     System.out.println("Invalid input, try again!");
                 }
-            } while (!invalid);
-        } while (true);
+            } while(!invalid);
+        }while (true);
     }
 
-    public static void initGame() {
-        board = new Board();
-        for (int row = 0; row < ROWS; ++row) {
-            for (int col = 0; col < COLS; ++col) {
-                board [row][col] = NO_SEED;  // all cells empty
-            }
-        }
-        // Roulette system: randomly choose CROSS or NOUGHT as the first player
-        currentPlayer = (Math.random() < 0.5) ? CROSS : NOUGHT;
-
-        currentState = PLAYING; // ready to play
-
-        // Display who starts first
-        if (currentPlayer == CROSS) {
-            System.out.println("Roulette decided: Player 'X' starts first!");
-        } else {
-            System.out.println("Roulette decided: Player 'O' starts first!");
-        }
+    /** Perform one-time initialization tasks */
+    public void initGame() {
+        board = new Board();  // allocate game-board
     }
 
     /** Reset the game-board contents and the current states, ready for new game */
     public void newGame() {
         board.newGame();  // clear the board contents
-        currentPlayer = CROSS;   // CROSS plays first
-        currentState = PLAYING; // ready to play
+        currentPlayer = Seed.CROSS;   // CROSS plays first
+        currentState = State.PLAYING; // ready to play
     }
 
     /** The currentPlayer makes one move.
@@ -108,8 +79,8 @@ public class GameMain {
             System.out.print("Player '" + icon + "', enter your move (row[1-3] column[1-3]): ");
             int row = in.nextInt() - 1;   // [0-2]
             int col = in.nextInt() - 1;
-            if (row >= 0 && row < ROWS && col >= 0 && col < COLS
-                    && board.cells[row][col].content == NO_SEED) {
+            if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
+                    && board.cells[row][col].content == Seed.NO_SEED) {
                 // Update cells[][] and return the new game state after the move
                 currentState = board.stepGame(currentPlayer, row, col);
                 validInput = true; // input okay, exit loop
