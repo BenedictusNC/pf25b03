@@ -64,7 +64,7 @@ public class TTTConsoleNonOO {
                 } else{
                     System.out.println("Invalid input, try again!");
                 }
-            } while(invalid);
+            } while(!invalid);
         }while (true);
     }
 
