@@ -16,7 +16,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  *    sound files, so that the play is not paused while loading the file for the first time.
  * 4. You can the static variable SoundEffect.volume to SoundEffect.Volume.MUTE
  *    to mute the sound.
- *
  * For Eclipse, place the audio file under "src", which will be copied into "bin".
  */
 public enum SoundEffect {

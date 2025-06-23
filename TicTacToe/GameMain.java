@@ -12,17 +12,20 @@ public class GameMain extends JPanel {
 
     // Define named constants for the drawing graphics
     public static final String TITLE = "Tic Tac Toe";
-    public static final Color COLOR_BG = Color.WHITE;
+    public static final Color COLOR_BG = Color.BLACK;
     public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
-    public static final Color COLOR_CROSS = new Color(239, 105, 80);  // Red #EF6950
-    public static final Color COLOR_NOUGHT = new Color(64, 154, 225); // Blue #409AE1
-    public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
+    public static final Font FONT_STATUS = new Font("Joker", Font.PLAIN, 14);
 
     // Define game objects
     private Board board;         // the game board
     private State currentState;  // the current state of the game
     private Seed currentPlayer;  // the current player
     private JLabel statusBar;    // for displaying status message
+    private int scoreCross;
+    private int scoreNought;
+    private AIPlayer aiPlayer;
+    private boolean vsAI = false;
+    private boolean isAITurn = false;
 
     /** Constructor to setup the UI and game components */
     public GameMain() {
@@ -31,33 +34,58 @@ public class GameMain extends JPanel {
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {  // mouse-clicked handler
+                if (isAITurn) return; // Ignore clicks during AI's turn
+
                 int mouseX = e.getX();
                 int mouseY = e.getY();
                 // Get the row and column clicked
                 int row = mouseY / Cell.SIZE;
                 int col = mouseX / Cell.SIZE;
 
-                if (currentPlayer == Seed.CROSS && currentState == State.PLAYING) {
-                    SoundEffect.EAT_FOOD.play();
-                } else if (currentPlayer == Seed.NOUGHT && currentState == State.PLAYING){
-                    SoundEffect.EXPLODE.play();
-                }
-
                 if (currentState == State.PLAYING) {
                     if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
                             && board.cells[row][col].content == Seed.NO_SEED) {
+                        if (currentPlayer == Seed.CROSS) {
+                            SoundEffect.EAT_FOOD.play();
+                        } else if (!vsAI) {
+                            SoundEffect.EXPLODE.play();
+                        }
                         // Update cells[][] and return the new game state after the move
                         currentState = board.stepGame(currentPlayer, row, col);
+                        if (currentState == State.CROSS_WON) {
+                            scoreCross++;
+                        } else if (currentState == State.NOUGHT_WON) {
+                            scoreNought++;
+                        }
                         // Switch player
                         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+                        repaint();
 
+                        if (vsAI && currentPlayer == Seed.NOUGHT && currentState == State.PLAYING) {
+                            isAITurn = true;
+                            Timer timer = new Timer(500, new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    SoundEffect.EXPLODE.play();
+                                    int[] move = aiPlayer.move(board);
+                                    currentState = board.stepGame(Seed.NOUGHT, move[0], move[1]);
+                                    if (currentState == State.NOUGHT_WON) {
+                                        scoreNought++;
+                                    }
+                                    currentPlayer = Seed.CROSS;
+                                    isAITurn = false;
+                                    repaint();
+                                }
+                            });
+                            timer.setRepeats(false);
+                            timer.start();
+                        }
                     }
                 } else {
                      // game over
                     newGame();  // restart the game
                 }
-                // Refresh the drawing canvas
-                repaint();  // Callback paintComponent().
+                repaint();
             }
         });
 
@@ -84,6 +112,9 @@ public class GameMain extends JPanel {
     /** Initialize the game (run once) */
     public void initGame() {
         board = new Board();  // allocate the game-board
+        aiPlayer = new AIPlayer(Seed.NOUGHT);
+        scoreCross = 0;
+        scoreNought = 0;
     }
 
 
@@ -108,19 +139,80 @@ public class GameMain extends JPanel {
         board.paint(g);  // ask the game board to paint itself
 
         // Print status-bar message
+        // Print status-bar message
+        String scoreStr = "  |  Score: X=" + scoreCross + ", O=" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
-            statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
+            statusBar.setText(((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn") + scoreStr);
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("It's a Draw! Click to play again.");
+            statusBar.setText("It's a Draw! Click to play again." + scoreStr);
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'X' Won! Click to play again.");
+            statusBar.setText("'X' Won! Click to play again." + scoreStr);
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'O' Won! Click to play again.");
+            statusBar.setText("'O' Won! Click to play again." + scoreStr);
         }
+    }
+
+    /** Create the menu bar */
+    public JMenuBar createMenuBar() {
+        JMenuBar menuBar  = new JMenuBar();
+        JMenu menu = new JMenu("Game");
+        menuBar.add(menu);
+
+        JMenuItem menuItem = new JMenuItem("New Game");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGame();
+                repaint();
+            }
+        });
+        menu.add(menuItem);
+
+        menu.addSeparator();
+
+        menuItem = new JMenuItem("Exit");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        menu.add(menuItem);
+
+        menu = new JMenu("Help");
+        menuBar.add(menu);
+
+        menuItem = new JMenuItem("About");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(GameMain.this,
+                        "Tic-Tac-Toe game implemented by Len, Nico, and Erpan",
+                        "About",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        menu.add(menuItem);
+
+        return menuBar;
+    }
+
+    /** Show a dialog to choose the game mode */
+    public void showModeDialog() {
+        Object[] options = {"Player vs Player", "Player vs AI"};
+        int response = JOptionPane.showOptionDialog(this,
+                "Choose your game mode",
+                "Game Mode",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+        vsAI = (response == 1);
     }
 
     /** The entry "main" method */
@@ -129,8 +221,11 @@ public class GameMain extends JPanel {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame(TITLE);
-                // Set the content-pane of the JFrame to an instance of main JPanel
-                frame.setContentPane(new GameMain());
+                // Create an instance of GameMain
+                GameMain gameMain = new GameMain();
+                frame.setContentPane(gameMain);  // Set content pane
+                frame.setJMenuBar(gameMain.createMenuBar()); // Add menu bar
+                gameMain.showModeDialog(); // Show mode dialog
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
                 frame.setLocationRelativeTo(null); // center the application window

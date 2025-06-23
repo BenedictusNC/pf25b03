@@ -1,6 +1,6 @@
 package TicTacToe;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 /**
  * The Board class models the ROWS-by-COLS game board.
  */
@@ -86,6 +86,35 @@ public class Board {
             }
             return State.DRAW; // no empty cell, it's a draw
         }
+    }
+
+    /** Check if the given player has won */
+    public boolean hasWon(Seed player) {
+        // Check for 3-in-a-row
+        for (int row = 0; row < ROWS; ++row) {
+            if (cells[row][0].content == player && cells[row][1].content == player && cells[row][2].content == player) {
+                return true;
+            }
+        }
+
+        // Check for 3-in-a-column
+        for (int col = 0; col < COLS; ++col) {
+            if (cells[0][col].content == player && cells[1][col].content == player && cells[2][col].content == player) {
+                return true;
+            }
+        }
+
+        // Check for 3-in-a-diagonal
+        if (cells[0][0].content == player && cells[1][1].content == player && cells[2][2].content == player) {
+            return true;
+        }
+
+        // Check for 3-in-a-opposite-diagonal
+        if (cells[0][2].content == player && cells[1][1].content == player && cells[2][0].content == player) {
+            return true;
+        }
+
+        return false;
     }
 
     /** Paint itself on the graphics canvas, given the Graphics context */
