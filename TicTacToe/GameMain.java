@@ -37,15 +37,10 @@ public class GameMain extends JPanel {
                 int row = mouseY / Cell.SIZE;
                 int col = mouseX / Cell.SIZE;
 
-                if (currentPlayer == Seed.CROSS) {
+                if (currentPlayer == Seed.CROSS && currentState == State.PLAYING) {
                     SoundEffect.EAT_FOOD.play();
-                } else {
+                } else if (currentPlayer == Seed.NOUGHT && currentState == State.PLAYING){
                     SoundEffect.EXPLODE.play();
-                }
-
-                // Jika setelah langkah status bukan PLAYING → play DIE
-                if (currentState == State.CROSS_WON || currentState == State.NOUGHT_WON || currentState == State.DRAW) {
-                    SoundEffect.DIE.play();  // Pastikan DIE adalah nama yang sesuai dengan efek suara di enum SoundEffect
                 }
 
                 if (currentState == State.PLAYING) {
@@ -55,7 +50,7 @@ public class GameMain extends JPanel {
                         currentState = board.stepGame(currentPlayer, row, col);
                         // Switch player
                         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
-                        stepGame();
+
                     }
                 } else {
                      // game over
@@ -91,13 +86,7 @@ public class GameMain extends JPanel {
         board = new Board();  // allocate the game-board
     }
 
-    public void stepGame() {
-        // Example logic for checking the game status
-        if (currentState == State.CROSS_WON || currentState == State.NOUGHT_WON || currentState == State.DRAW) {
-            // Play the die.wav sound effect when the game ends
-            SoundEffect.DIE.play();  // Assuming DIE is mapped to 'Die.wav' in the SoundEffect enum
-        }
-    }
+
 
     /** Reset the game-board contents and the current-state, ready for new game */
     public void newGame() {

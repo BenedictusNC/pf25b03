@@ -1,4 +1,5 @@
 package TicTacToe;
+import javax.swing.*;
 import java.awt.*;
 /**
  * The Board class models the ROWS-by-COLS game board.
@@ -15,6 +16,7 @@ public class Board {
     public static final Color COLOR_GRID = Color.LIGHT_GRAY;  // grid lines
     public static final int Y_OFFSET = 1;  // Fine tune for better display
 
+    private Image bgImage;
     // Define properties (package-visible)
     /** Composes of 2D array of ROWS-by-COLS Cell instances */
     Cell[][] cells;
@@ -22,6 +24,7 @@ public class Board {
     /** Constructor to initialize the game board */
     public Board() {
         initGame();
+        bgImage = new ImageIcon(getClass().getResource("/image/bg.png")).getImage();
     }
 
     /** Initialize the game objects (run once) */
@@ -69,7 +72,9 @@ public class Board {
                 && cells[0][2].content == player
                 && cells[1][1].content == player
                 && cells[2][0].content == player) {
+            SoundEffect.DIE.play();
             return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
+
         } else {
             // Nobody win. Check for DRAW (all cells occupied) or PLAYING.
             for (int row = 0; row < ROWS; ++row) {
@@ -85,6 +90,9 @@ public class Board {
 
     /** Paint itself on the graphics canvas, given the Graphics context */
     public void paint(Graphics g) {
+        if (bgImage != null) {
+            g.drawImage(bgImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, null);
+        }
         // Draw the grid-lines
         g.setColor(COLOR_GRID);
         for (int row = 1; row < ROWS; ++row) {
