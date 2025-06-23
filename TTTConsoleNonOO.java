@@ -66,7 +66,6 @@ public class TTTConsoleNonOO {
                 }
             } while(!invalid);
         }while (true);
-        System.out.println("Erfan");
     }
 
     /** Initialize the board[][], currentState and currentPlayer for a new game*/
