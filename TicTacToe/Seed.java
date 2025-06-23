@@ -1,4 +1,4 @@
-package Main;
+package TicTacToe;
 
 public enum Seed {
     CROSS("X"), NOUGHT("O"), NO_SEED(" ");

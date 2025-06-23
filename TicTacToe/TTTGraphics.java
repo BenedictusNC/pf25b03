@@ -1,4 +1,4 @@
-package Main;
+package TicTacToe;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
