@@ -37,17 +37,28 @@ public class GameMain extends JPanel {
                 int row = mouseY / Cell.SIZE;
                 int col = mouseX / Cell.SIZE;
 
+                if (currentPlayer == Seed.CROSS) {
+                    SoundEffect.EAT_FOOD.play();
+                } else {
+                    SoundEffect.EXPLODE.play();
+                }
+
+                // Jika setelah langkah status bukan PLAYING → play DIE
+                if (currentState == State.CROSS_WON || currentState == State.NOUGHT_WON || currentState == State.DRAW) {
+                    SoundEffect.DIE.play();  // Pastikan DIE adalah nama yang sesuai dengan efek suara di enum SoundEffect
+                }
+
                 if (currentState == State.PLAYING) {
                     if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
                             && board.cells[row][col].content == Seed.NO_SEED) {
-
                         // Update cells[][] and return the new game state after the move
                         currentState = board.stepGame(currentPlayer, row, col);
                         // Switch player
                         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
-                    } SoundEffect.EAT_FOOD.play();
+                        stepGame();
+                    }
                 } else {
-                    SoundEffect.DIE.play(); // game over
+                     // game over
                     newGame();  // restart the game
                 }
                 // Refresh the drawing canvas
@@ -78,6 +89,14 @@ public class GameMain extends JPanel {
     /** Initialize the game (run once) */
     public void initGame() {
         board = new Board();  // allocate the game-board
+    }
+
+    public void stepGame() {
+        // Example logic for checking the game status
+        if (currentState == State.CROSS_WON || currentState == State.NOUGHT_WON || currentState == State.DRAW) {
+            // Play the die.wav sound effect when the game ends
+            SoundEffect.DIE.play();  // Assuming DIE is mapped to 'Die.wav' in the SoundEffect enum
+        }
     }
 
     /** Reset the game-board contents and the current-state, ready for new game */
