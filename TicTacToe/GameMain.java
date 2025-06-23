@@ -40,12 +40,14 @@ public class GameMain extends JPanel {
                 if (currentState == State.PLAYING) {
                     if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
                             && board.cells[row][col].content == Seed.NO_SEED) {
+
                         // Update cells[][] and return the new game state after the move
                         currentState = board.stepGame(currentPlayer, row, col);
                         // Switch player
                         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
-                    }
-                } else {        // game over
+                    } SoundEffect.EAT_FOOD.play();
+                } else {
+                    SoundEffect.DIE.play(); // game over
                     newGame();  // restart the game
                 }
                 // Refresh the drawing canvas
