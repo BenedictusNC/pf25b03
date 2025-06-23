@@ -60,7 +60,7 @@ public class TTTConsoleNonOO {
                     System.out.println("Bye!");
                     System.exit(0);  // terminate the program
                 } else if(ans == 'y' || ans == 'Y'){
-                    invalid = false;
+                    invalid = true;
                 } else{
                     System.out.println("Invalid input, try again!");
                 }
@@ -167,10 +167,7 @@ public class TTTConsoleNonOO {
             case CROSS:   System.out.print(" X "); break;
             case NOUGHT:  System.out.print(" O "); break;
             case NO_SEED: System.out.print("   "); break;
-
         }
-        System.out.println("adha");
-        System.out.println("Java Programming");
     }
 
 }
