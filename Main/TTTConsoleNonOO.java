@@ -1,3 +1,5 @@
+package Main;
+
 import java.util.Scanner;
 /**
  * Tic-Tac-Toe: Two-player, console-based, non-graphics, non-OO version.
@@ -5,27 +7,15 @@ import java.util.Scanner;
  *  in this non-OO version.
  */
 public class TTTConsoleNonOO {
-    // Define named constants for:
-    //  1. Player: using CROSS and NOUGHT
-    //  2. Cell contents: using CROSS, NOUGHT and NO_SEED
-    public static final int CROSS   = 0;
-    public static final int NOUGHT  = 1;
-    public static final int NO_SEED = 2;
 
     // The game board
     public static final int ROWS = 3, COLS = 3;  // number of rows/columns
-    public static int[][] board = new int[ROWS][COLS]; // EMPTY, CROSS, NOUGHT
+    public static Seed[][] board = new Seed[ROWS][COLS]; // EMPTY, CROSS, NOUGHT
 
     // The current player
-    public static int currentPlayer;  // CROSS, NOUGHT
-
-    // Define named constants to represent the various states of the game
-    public static final int PLAYING    = 0;
-    public static final int DRAW       = 1;
-    public static final int CROSS_WON  = 2;
-    public static final int NOUGHT_WON = 3;
+    public static Seed currentPlayer;  // CROSS, NOUGHT
     // The current state of the game
-    public static int currentState;
+    public static State currentState;
 
     public static Scanner in = new Scanner(System.in); // the input Scanner
 
@@ -42,16 +32,16 @@ public class TTTConsoleNonOO {
                 // Refresh the display
                 paintBoard();
                 // Print message if game over
-                if (currentState == CROSS_WON) {
+                if (currentState == State.CROSS_WON) {
                     System.out.println("'X' won!\nBye!");
-                } else if (currentState == NOUGHT_WON) {
+                } else if (currentState == State.NOUGHT_WON) {
                     System.out.println("'O' won!\nBye!");
-                } else if (currentState == DRAW) {
+                } else if (currentState == State.DRAW) {
                     System.out.println("It's a Draw!\nBye!");
                 }
                 // Switch currentPlayer
-                currentPlayer = (currentPlayer == CROSS) ? NOUGHT : CROSS;
-            } while (currentState == PLAYING); // repeat if not game over
+                currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+            } while (currentState == State.PLAYING); // repeat if not game over
             boolean invalid = false;
             do{
                 System.out.print("Play again (y/n)? ");
@@ -67,35 +57,25 @@ public class TTTConsoleNonOO {
             } while(!invalid);
         }while (true);
     }
-    //Program that choose who do first move
-    public static void initGame() {
-        for (int row = 0; row < ROWS; ++row) {
-            for (int col = 0; col < COLS; ++col) {
-                board[row][col] = NO_SEED;  // all cells empty
-            }
-        }
-        // Roulette system: randomly choose CROSS or NOUGHT as the first player
-        currentPlayer = (Math.random() < 0.5) ? CROSS : NOUGHT; //Probability on math
-
-        currentState  = PLAYING; // ready to play
-
-        // Display who starts first
-        if (currentPlayer == CROSS) {
-            System.out.println("Roulette decided: Player 'X' starts first!");
-        } else {
-            System.out.println("Roulette decided: Player 'O' starts first!");
-        }
-    }
 
     /** Initialize the board[][], currentState and currentPlayer for a new game*/
     public static void initGame() {
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
-                board[row][col] = NO_SEED;  // all cells empty
+                board[row][col] = Seed.NO_SEED;  // all cells empty
             }
         }
-        currentPlayer = CROSS;   // cross plays first
-        currentState  = PLAYING; // ready to play
+        // Roulette system: randomly choose CROSS or NOUGHT as the first player
+        currentPlayer = (Math.random() < 0.5) ? Seed.CROSS : Seed.NOUGHT;
+
+        currentState  = State.PLAYING; // ready to play
+
+        // Display who starts first
+        if (currentPlayer == Seed.CROSS) {
+            System.out.println("Roulette decided: Player 'X' starts first!");
+        } else {
+            System.out.println("Roulette decided: Player 'O' starts first!");
+        }
     }
 
     /** The currentPlayer makes one move (one step).
@@ -103,7 +83,7 @@ public class TTTConsoleNonOO {
     public static void stepGame() {
         boolean validInput = false;  // for input validation
         do {
-            if (currentPlayer == CROSS) {
+            if (currentPlayer == Seed.CROSS) {
                 System.out.print("Player 'X', enter your move (row[1-3] column[1-3]): ");
             } else {
                 System.out.print("Player 'O', enter your move (row[1-3] column[1-3]): ");
@@ -111,7 +91,7 @@ public class TTTConsoleNonOO {
             int row = in.nextInt() - 1;  // array index starts at 0 instead of 1
             int col = in.nextInt() - 1;
             if (row >= 0 && row < ROWS && col >= 0 && col < COLS
-                    && board[row][col] == NO_SEED) {
+                    && board[row][col] == Seed.NO_SEED) {
                 // Update board[][] and return the new game state after the move
                 currentState = stepGameUpdate(currentPlayer, row, col);
                 validInput = true;  // input okay, exit loop
@@ -129,7 +109,7 @@ public class TTTConsoleNonOO {
      * new game state (PLAYING, DRAW, CROSS_WON, NOUGHT_WON).
      * @return new game state
      */
-    public static int stepGameUpdate(int player, int selectedRow, int selectedCol) {
+    public static State stepGameUpdate(Seed player, int selectedRow, int selectedCol) {
         // Update game board
         board[selectedRow][selectedCol] = player;
 
@@ -148,17 +128,17 @@ public class TTTConsoleNonOO {
                 && board[0][2] == player
                 && board[1][1] == player
                 && board[2][0] == player) {
-            return (player == CROSS) ? CROSS_WON : NOUGHT_WON;
+            return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
         } else {
             // Nobody win. Check for DRAW (all cells occupied) or PLAYING.
             for (int row = 0; row < ROWS; ++row) {
                 for (int col = 0; col < COLS; ++col) {
-                    if (board[row][col] == NO_SEED) {
-                        return PLAYING; // still have empty cells
+                    if (board[row][col] == Seed.NO_SEED) {
+                        return State.PLAYING; // still have empty cells
                     }
                 }
             }
-            return DRAW; // no empty cell, it's a draw
+            return State.DRAW; // no empty cell, it's a draw
         }
     }
 
@@ -180,12 +160,8 @@ public class TTTConsoleNonOO {
     }
 
     /** Print a cell having the given content */
-    public static void paintCell(int content) {
-        switch (content) {
-            case CROSS:   System.out.print(" X "); break;
-            case NOUGHT:  System.out.print(" O "); break;
-            case NO_SEED: System.out.print("   "); break;
+    public static void paintCell(Seed content) {
+        System.out.print(" " + content.getIcon() + " ");
         }
     }
 
-}
