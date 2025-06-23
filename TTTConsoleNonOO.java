@@ -66,7 +66,25 @@ public class TTTConsoleNonOO {
                 }
             } while(!invalid);
         }while (true);
-        System.out.println("Erfan");
+    }
+    //Program that choose who do first move
+    public static void initGame() {
+        for (int row = 0; row < ROWS; ++row) {
+            for (int col = 0; col < COLS; ++col) {
+                board[row][col] = NO_SEED;  // all cells empty
+            }
+        }
+        // Roulette system: randomly choose CROSS or NOUGHT as the first player
+        currentPlayer = (Math.random() < 0.5) ? CROSS : NOUGHT; //Probability on math
+
+        currentState  = PLAYING; // ready to play
+
+        // Display who starts first
+        if (currentPlayer == CROSS) {
+            System.out.println("Roulette decided: Player 'X' starts first!");
+        } else {
+            System.out.println("Roulette decided: Player 'O' starts first!");
+        }
     }
 
     /** Initialize the board[][], currentState and currentPlayer for a new game*/
