@@ -81,9 +81,11 @@ public class ModeSelectionDialog extends JDialog {
     private JButton createTextButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
-        button.setBackground(new Color(255, 255, 255, 220)); // transparan putih
+        button.setBackground(Color.WHITE);
+        button.setOpaque(true);
         button.setForeground(new Color(51, 0, 0));
         button.setFocusPainted(false);
+        button.setContentAreaFilled(true);
         button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return button;
