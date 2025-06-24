@@ -13,7 +13,7 @@ public class Board {
     public static final int CANVAS_HEIGHT = Cell.SIZE * ROWS;
     public static final int GRID_WIDTH = 8;  // Grid-line's width
     public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2; // Grid-line's half-width
-    public static final Color COLOR_GRID = Color.LIGHT_GRAY;  // grid lines
+    public static final Color COLOR_GRID = new Color(41, 25, 13);;  // grid lines
     public static final int Y_OFFSET = 1;  // Fine tune for better display
 
     private Image bgImage;
@@ -24,7 +24,7 @@ public class Board {
     /** Constructor to initialize the game board */
     public Board() {
         initGame();
-        bgImage = new ImageIcon(getClass().getResource("/image/Quartz.png")).getImage();
+        bgImage = new ImageIcon(getClass().getResource("/image/crafting22.png")).getImage();
     }
 
     /** Initialize the game objects (run once) */

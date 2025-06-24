@@ -13,7 +13,7 @@ public class GameMain extends JPanel {
     // Define named constants for the drawing graphics
     public static final String TITLE = "Tic Tac Toe";
     public static final Color COLOR_BG = Color.WHITE;
-    public static final Color COLOR_BG_STATUS = new Color(50, 205, 50);
+    public static final Color COLOR_BG_STATUS = new Color(247, 202, 139);
     public static final Font FONT_STATUS = new Font("Jokerman", Font.PLAIN, 14);
 
     // Define game objects

@@ -22,7 +22,7 @@ public class TTTGraphics extends JFrame {
     public static final int SYMBOL_STROKE_WIDTH = 8; // pen's stroke width
     public static final Color COLOR_BG = Color.WHITE;  // background
     public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
-    public static final Color COLOR_GRID   = Color.GREEN;  // grid lines
+    public static final Color COLOR_GRID   = new Color (247, 202, 139);  // grid lines
     public static final Color COLOR_CROSS  = new Color(211, 45, 65);  // Red #D32D41
     public static final Color COLOR_NOUGHT = new Color(76, 181, 245); // Blue #4CB5F5
     public static final Font FONT_STATUS = new Font("Jokerman", Font.PLAIN, 64);
