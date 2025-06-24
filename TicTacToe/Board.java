@@ -24,7 +24,7 @@ public class Board {
     /** Constructor to initialize the game board */
     public Board() {
         initGame();
-        bgImage = new ImageIcon(getClass().getResource("/image/bg.png")).getImage();
+        bgImage = new ImageIcon(getClass().getResource("/image/Quartz.png")).getImage();
     }
 
     /** Initialize the game objects (run once) */
