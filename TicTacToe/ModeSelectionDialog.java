@@ -1,6 +1,7 @@
 package TicTacToe;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.sound.sampled.*;
 import java.net.URL;
 
@@ -10,12 +11,11 @@ public class ModeSelectionDialog extends JDialog {
 
     public ModeSelectionDialog(JFrame parent) {
         super(parent, "Tic Tac Toe", true);
-        setLayout(new BorderLayout());
-        setSize(360, 200);
+        setSize(400, 240);
         setResizable(false);
         setLocationRelativeTo(parent);
 
-        // === Start background music ===
+        // === Load & play background music ===
         try {
             URL soundURL = getClass().getClassLoader().getResource("audio/menu_bgm.wav");
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
@@ -26,46 +26,63 @@ public class ModeSelectionDialog extends JDialog {
             System.err.println("BGM load error: " + e.getMessage());
         }
 
-        // === Title Label ===
+        // === Custom panel with background image ===
+        JPanel bgPanel = new JPanel() {
+            private Image bgImage = new ImageIcon(
+                    getClass().getClassLoader().getResource("image/menu_bg.png")
+            ).getImage();
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (bgImage != null) {
+                    g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        bgPanel.setLayout(new BorderLayout());
+        setContentPane(bgPanel);
+
+        // === Title label ===
         JLabel title = new JLabel("Tic Tac Toe", JLabel.CENTER);
-        title.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        title.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
+        title.setForeground(Color.WHITE);
         title.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
-        title.setForeground(new Color(51, 30, 0));
-        add(title, BorderLayout.NORTH);
 
-        // === Button Panel ===
+        // === Button panel ===
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
-        buttonPanel.setBackground(new Color(255, 239, 184));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 20, 40));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 20, 50));
 
-        // === Player vs Player Button ===
-        JButton pvpButton = createTextButton("Player vs Player");
-        pvpButton.addActionListener(e -> {
+        JButton pvpBtn = createTextButton("Player vs Player");
+        JButton aiBtn = createTextButton("Player vs AI");
+
+        pvpBtn.addActionListener(e -> {
             vsAI = false;
             SoundEffect.MENU.play();
             stopMusic();
             dispose();
         });
 
-        // === Player vs AI Button ===
-        JButton aiButton = createTextButton("Player vs AI");
-        aiButton.addActionListener(e -> {
+        aiBtn.addActionListener(e -> {
             vsAI = true;
             SoundEffect.MENU.play();
             stopMusic();
             dispose();
         });
 
-        buttonPanel.add(pvpButton);
-        buttonPanel.add(aiButton);
-        add(buttonPanel, BorderLayout.CENTER);
+        buttonPanel.add(pvpBtn);
+        buttonPanel.add(aiBtn);
+
+        bgPanel.add(title, BorderLayout.NORTH);
+        bgPanel.add(buttonPanel, BorderLayout.CENTER);
     }
 
     private JButton createTextButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
-        button.setBackground(new Color(255, 248, 220));
-        button.setForeground(new Color(80, 40, 0));
+        button.setBackground(new Color(255, 255, 255, 220)); // transparan putih
+        button.setForeground(new Color(51, 0, 0));
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

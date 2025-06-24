@@ -140,19 +140,19 @@ public class GameMain extends JPanel {
 
         // Print status-bar message
         // Print status-bar message
-        String scoreStr = "  |  Score: Dmd=" + scoreCross + ", Erd=" + scoreNought;
+        String scoreStr = "  |  Score: D =" + scoreCross + ", E =" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
-            statusBar.setText(((currentPlayer == Seed.CROSS) ? "Dmd's Turn" : "Erd's Turn") + scoreStr);
+            statusBar.setText(((currentPlayer == Seed.CROSS) ? "D's Turn" : "E's Turn") + scoreStr);
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click to play again." + scoreStr);
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'Dmd' Won! Click to play again." + scoreStr);
+            statusBar.setText("Diamond Won! Click to play again." + scoreStr);
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'Erd' Won! Click to play again." + scoreStr);
+            statusBar.setText("Emerald Won! Click to play again." + scoreStr);
         }
     }
 
