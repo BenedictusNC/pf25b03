@@ -12,9 +12,9 @@ public class GameMain extends JPanel {
 
     // Define named constants for the drawing graphics
     public static final String TITLE = "Tic Tac Toe";
-    public static final Color COLOR_BG = Color.BLACK;
-    public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
-    public static final Font FONT_STATUS = new Font("Joker", Font.PLAIN, 14);
+    public static final Color COLOR_BG = Color.WHITE;
+    public static final Color COLOR_BG_STATUS = new Color(50, 205, 50);
+    public static final Font FONT_STATUS = new Font("Jokerman", Font.PLAIN, 14);
 
     // Define game objects
     private Board board;         // the game board
@@ -213,6 +213,7 @@ public class GameMain extends JPanel {
                 options,
                 options[0]);
         vsAI = (response == 1);
+        SoundEffect.MENU.play();
     }
 
     /** The entry "main" method */
