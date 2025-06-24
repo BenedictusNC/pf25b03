@@ -205,22 +205,32 @@ public class GameMain extends JPanel {
         SoundEffect.MENU.play();
     }
 
-    /** The entry "main" method */
-    public static void main(String[] args) {
-        // Run GUI construction codes in Event-Dispatching thread for thread safety
+    /**
+     * Show the main game window
+     */
+    public static void showGameWindow(boolean vsAI) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame(TITLE);
-                // Create an instance of GameMain
                 GameMain gameMain = new GameMain();
-                frame.setContentPane(gameMain);  // Set content pane
-                frame.setJMenuBar(gameMain.createMenuBar()); // Add menu bar
-                gameMain.showModeDialog(); // Show mode dialog
+                gameMain.vsAI = vsAI;
+                frame.setContentPane(gameMain);
+                frame.setJMenuBar(gameMain.createMenuBar());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
                 frame.setLocationRelativeTo(null); // center the application window
                 frame.setVisible(true);            // show it
             }
         });
+    }
+
+    // Overload lama untuk kompatibilitas
+    public static void showGameWindow() {
+        showGameWindow(false);
+    }
+
+    /** The entry "main" method */
+    public static void main(String[] args) {
+        WelcomePage.showWelcome();
     }
 }
