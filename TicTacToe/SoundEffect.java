@@ -22,7 +22,7 @@ public enum SoundEffect {
     EAT_FOOD("audio/click.wav"),
     EXPLODE("audio/ignite.wav"),
     DIE("audio/levelup.wav"),
-    MENU("audio/menu1.wav");
+    MENU("audio/creative4.wav");
 
     /** Nested enumeration for specifying volume */
     public static enum Volume {

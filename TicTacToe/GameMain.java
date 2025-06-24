@@ -14,7 +14,7 @@ public class GameMain extends JPanel {
     public static final String TITLE = "Tic Tac Toe";
     public static final Color COLOR_BG = new Color(247, 202, 139);
     public static final Color COLOR_BG_STATUS = new Color(247, 202, 139);
-    public static final Font FONT_STATUS = new Font("Jokerman", Font.PLAIN, 14);
+    public static final Font FONT_STATUS = new Font("Comic Sans MS", Font.PLAIN, 14);
 
     // Define game objects
     private Board board;         // the game board
@@ -140,19 +140,19 @@ public class GameMain extends JPanel {
 
         // Print status-bar message
         // Print status-bar message
-        String scoreStr = "  |  Score: X=" + scoreCross + ", O=" + scoreNought;
+        String scoreStr = "  |  Score: Dmd=" + scoreCross + ", Erd=" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
-            statusBar.setText(((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn") + scoreStr);
+            statusBar.setText(((currentPlayer == Seed.CROSS) ? "Dmd's Turn" : "Erd's Turn") + scoreStr);
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click to play again." + scoreStr);
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'X' Won! Click to play again." + scoreStr);
+            statusBar.setText("'Dmd' Won! Click to play again." + scoreStr);
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'O' Won! Click to play again." + scoreStr);
+            statusBar.setText("'Erd' Won! Click to play again." + scoreStr);
         }
     }
 
@@ -203,16 +203,9 @@ public class GameMain extends JPanel {
 
     /** Show a dialog to choose the game mode */
     public void showModeDialog() {
-        Object[] options = {"Player vs Player", "Player vs AI"};
-        int response = JOptionPane.showOptionDialog(this,
-                "Choose your game mode",
-                "Game Mode",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
-        vsAI = (response == 1);
+        ModeSelectionDialog dialog = new ModeSelectionDialog(null);
+        dialog.setVisible(true);
+        vsAI = dialog.isVsAI();
         SoundEffect.MENU.play();
     }
 
