@@ -60,6 +60,7 @@ public class WelcomePage extends JFrame {
             // Dialog pemilihan mode (vs AI atau PvP)
             ModeSelectionDialog modeDialog = new ModeSelectionDialog(null);
             modeDialog.setVisible(true);
+            if (!modeDialog.isSubmitted()) return;
             boolean vsAI = modeDialog.isVsAI();
             String player2 = "AI";
             boolean playerIsDiamond = true;
@@ -69,8 +70,9 @@ public class WelcomePage extends JFrame {
                 UsernameInputDialog usernameDialog2 = new UsernameInputDialog(null);
                 usernameDialog2.setTitleLabel("Masukkan Nama Player 2");
                 usernameDialog2.setVisible(true);
+                if (!usernameDialog2.isSubmitted()) return;
                 player2 = usernameDialog2.getUsername();
-                if (!usernameDialog2.isSubmitted() || player2.isEmpty()) player2 = "Player 2";
+                if (player2.isEmpty()) player2 = "Player 2";
             } else {
                 // Jika lawan AI, pilih karakter (Diamond/Emerald)
                 ChooseSeedDialog chooseSeedDialog = new ChooseSeedDialog(null);

@@ -7,6 +7,7 @@ import java.net.URL;
 
 public class ModeSelectionDialog extends JDialog {
     private boolean vsAI = false;
+    private boolean submitted = false;
     private Clip bgmClip;
 
     public ModeSelectionDialog(JFrame parent) {
@@ -62,6 +63,7 @@ public class ModeSelectionDialog extends JDialog {
         // Event klik PvP
         pvpBtn.addActionListener(e -> {
             vsAI = false;
+            submitted = true;
             SoundEffect.MENU.play();
             stopMusic();
             dispose();
@@ -70,6 +72,7 @@ public class ModeSelectionDialog extends JDialog {
         // Event klik AI
         aiBtn.addActionListener(e -> {
             vsAI = true;
+            submitted = true;
             SoundEffect.MENU.play();
             stopMusic();
             dispose();
@@ -107,5 +110,19 @@ public class ModeSelectionDialog extends JDialog {
     // Cek apakah mode vs AI
     public boolean isVsAI() {
         return vsAI;
+    }
+
+    // Cek apakah dialog disubmit (bukan di-close)
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    @Override
+    protected void processWindowEvent(java.awt.event.WindowEvent e) {
+        if (e.getID() == java.awt.event.WindowEvent.WINDOW_CLOSING) {
+            submitted = false;
+            stopMusic();
+        }
+        super.processWindowEvent(e);
     }
 }

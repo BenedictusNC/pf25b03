@@ -183,7 +183,7 @@ public class GameMain extends JPanel {
         board.paint(g); // Gambar papan
 
         // Tampilkan status di status bar
-        String scoreStr = "  |  Score: " + player1Name + " =" + scoreCross + ", " + player2Name + " =" + scoreNought;
+        String scoreStr = "  |  Score: " + player1Name + " :" + scoreCross + ", " + player2Name + " :" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
             String turnName = (currentPlayer == Seed.CROSS) ? player1Name : player2Name;
@@ -217,6 +217,47 @@ public class GameMain extends JPanel {
             }
         });
         menu.add(menuItem);
+
+        menu.addSeparator();
+
+        JMenuItem backToModeMenuItem = new JMenuItem("Back to Mode Selection");
+        backToModeMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(GameMain.this);
+                if (topFrame != null) topFrame.dispose();
+                SwingUtilities.invokeLater(() -> {
+                    ModeSelectionDialog modeDialog = new ModeSelectionDialog(null);
+                    modeDialog.setVisible(true);
+                    if (!modeDialog.isSubmitted()) {
+                        return;
+                    }
+                    boolean newVsAI = modeDialog.isVsAI();
+                    String player1 = player1Name;
+                    String player2 = player2Name;
+                    boolean playerIsDiamond = GameMain.this.playerIsDiamond;
+                    if (!newVsAI) {
+                        if (player2.equals("AI")) player2 = "Player 2";
+                        UsernameInputDialog usernameDialog2 = new UsernameInputDialog(null);
+                        usernameDialog2.setTitleLabel("Masukkan Nama Player 2");
+                        usernameDialog2.setVisible(true);
+                        if (!usernameDialog2.isSubmitted()) return; // <-- Tambah pengecekan close dialog
+                        String inputPlayer2 = usernameDialog2.getUsername();
+                        if (!inputPlayer2.isEmpty()) {
+                            player2 = inputPlayer2;
+                        }
+                    } else {
+                        player2 = "AI";
+                        ChooseSeedDialog chooseSeedDialog = new ChooseSeedDialog(null);
+                        chooseSeedDialog.setVisible(true);
+                        if (!chooseSeedDialog.isSubmitted()) return; // <-- Tambah pengecekan close dialog
+                        playerIsDiamond = chooseSeedDialog.isDiamond();
+                    }
+                    GameMain.showGameWindow(newVsAI, player1, player2, playerIsDiamond);
+                });
+            }
+        });
+        menu.add(backToModeMenuItem);
 
         menu.addSeparator();
 
@@ -274,7 +315,7 @@ public class GameMain extends JPanel {
                 GameMain gameMain = new GameMain(vsAI, player1Name, player2Name, playerIsDiamond);
                 frame.setContentPane(gameMain);
                 frame.setJMenuBar(gameMain.createMenuBar());
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
