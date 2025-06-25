@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AIPlayer {
-    private final Seed aiSeed;         // Seed milik AI (CROSS/NOUGHT)
-    private final Seed opponentSeed;   // Seed lawan AI
+    private final Seed aiSeed;
+    private final Seed opponentSeed;
 
     public AIPlayer(Seed aiSeed) {
         this.aiSeed = aiSeed;
