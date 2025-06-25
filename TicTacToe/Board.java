@@ -3,7 +3,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class Board {
-    // Konstanta ukuran dan tampilan
     public static final int ROWS = 3;
     public static final int COLS = 3;
     public static final int CANVAS_WIDTH = Cell.SIZE * COLS;
@@ -14,7 +13,6 @@ public class Board {
     public static final int Y_OFFSET = 1;
 
     private Image bgImage;
-    // Array 2D Cell
     Cell[][] cells;
     private int winType = -1;
     public Board() {
@@ -42,7 +40,6 @@ public class Board {
 
     public State stepGame(Seed player, int selectedRow, int selectedCol) {
         cells[selectedRow][selectedCol].content = player;
-        // Cek baris
         for (int row = 0; row < ROWS; row++) {
             if (cells[row][0].content == player && cells[row][1].content == player && cells[row][2].content == player) {
                 winType = row;

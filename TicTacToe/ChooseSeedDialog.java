@@ -12,7 +12,7 @@ public class ChooseSeedDialog extends JDialog {
         super(parent, "Pilih", true);
         setSize(500, 320);
         setResizable(false);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
         JPanel bgPanel = new JPanel() {
             private Image bgImage = new ImageIcon(getClass().getClassLoader().getResource("image/menu_bg.png")).getImage();

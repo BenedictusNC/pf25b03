@@ -17,7 +17,7 @@ public class UsernameInputDialog extends JDialog {
         super(parent, "Input Username", true);
         setSize(400, 260);
         setResizable(false);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
         try {
             URL soundURL = getClass().getClassLoader().getResource("audio/menu_bgm.wav");
