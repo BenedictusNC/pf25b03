@@ -93,7 +93,6 @@ public class GameMain extends JPanel {
             }
         });
 
-        // === Status bar di bawah papan ===
         statusBar = new JLabel();
         statusBar.setFont(FONT_STATUS);
         statusBar.setBackground(COLOR_BG_STATUS);
@@ -226,9 +225,7 @@ public class GameMain extends JPanel {
             }
         });
         menu.add(backToModeMenuItem);
-
         menu.addSeparator();
-
         menuItem = new JMenuItem("Exit");
         menuItem.addActionListener(new ActionListener() {
             @Override
@@ -237,7 +234,6 @@ public class GameMain extends JPanel {
             }
         });
         menu.add(menuItem);
-
         menu = new JMenu("Help");
         menuBar.add(menu);
 
