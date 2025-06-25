@@ -50,11 +50,10 @@ public class WelcomePage extends JFrame {
             UsernameInputDialog usernameDialog = new UsernameInputDialog(null);
             usernameDialog.setVisible(true);
             String player1 = usernameDialog.getUsername();
-            if (!usernameDialog.isSubmitted()) return;
-
+            if (!usernameDialog.isSubmitted())
+                return;
             ModeSelectionDialog modeDialog = new ModeSelectionDialog(null);
             modeDialog.setVisible(true);
-            if (!modeDialog.isSubmitted()) return;
             boolean vsAI = modeDialog.isVsAI();
             String player2 = "AI";
             boolean playerIsDiamond = true;
