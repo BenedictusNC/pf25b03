@@ -5,16 +5,15 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ChooseSeedDialog extends JDialog {
-    private boolean isDiamond = true; // true = Diamond (CROSS), false = Emerald (NOUGHT)
+    private boolean isDiamond = true;
     private boolean submitted = false;
 
     public ChooseSeedDialog(JFrame parent) {
         super(parent, "Pilih", true);
-        setSize(500, 320); // Lebih besar
+        setSize(500, 320);
         setResizable(false);
         setLocationRelativeTo(parent);
 
-        // === Panel background custom dengan gambar ===
         JPanel bgPanel = new JPanel() {
             private Image bgImage = new ImageIcon(getClass().getClassLoader().getResource("image/menu_bg.png")).getImage();
             @Override
@@ -28,7 +27,6 @@ public class ChooseSeedDialog extends JDialog {
         bgPanel.setLayout(new BoxLayout(bgPanel, BoxLayout.Y_AXIS));
         setContentPane(bgPanel);
 
-        // === Label judul dialog ===
         JLabel title = new JLabel("Pilih Karakter Anda", JLabel.CENTER);
         title.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         title.setForeground(Color.WHITE);
@@ -36,12 +34,10 @@ public class ChooseSeedDialog extends JDialog {
         title.setBorder(BorderFactory.createEmptyBorder(18, 10, 10, 10));
         bgPanel.add(title);
 
-        // === Panel tombol pilihan karakter ===
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 60, 20)); // Lebih lebar
 
-        // Tombol Diamond
         ImageIcon diamondIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("image/Diamond.png")).getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
         JButton diamondBtn = new JButton("Diamond", diamondIcon);
         diamondBtn.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
@@ -57,7 +53,6 @@ public class ChooseSeedDialog extends JDialog {
             dispose();
         });
 
-        // Tombol Emerald
         ImageIcon emeraldIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("image/Emerald.png")).getImage().getScaledInstance(96, 96, Image.SCALE_SMOOTH));
         JButton emeraldBtn = new JButton("Emerald", emeraldIcon);
         emeraldBtn.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
@@ -78,11 +73,9 @@ public class ChooseSeedDialog extends JDialog {
         bgPanel.add(buttonPanel);
     }
 
-    // Cek apakah Diamond yang dipilih
     public boolean isDiamond() {
         return isDiamond;
     }
-    // Cek apakah sudah submit
     public boolean isSubmitted() {
         return submitted;
     }
