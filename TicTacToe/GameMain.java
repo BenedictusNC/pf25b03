@@ -3,24 +3,25 @@ package TicTacToe;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
 /**
- * Tic-Tac-Toe: Two-player Graphic version with better OO design.
- * The Board and Cell classes are separated in their own classes.
+ * Tic-Tac-Toe: Versi grafis dua pemain dengan desain OOP yang lebih baik.
+ * Kelas Board dan Cell dipisahkan dalam file terpisah.
  */
 public class GameMain extends JPanel {
-    private static final long serialVersionUID = 1L; // to prevent serializable warning
+    private static final long serialVersionUID = 1L; // Untuk mencegah warning serializable
 
-    // Define named constants for the drawing graphics
+    // === Konstanta untuk tampilan grafis ===
     public static final String TITLE = "Tic Tac Toe";
     public static final Color COLOR_BG = new Color(247, 202, 139);
     public static final Color COLOR_BG_STATUS = new Color(247, 202, 139);
     public static final Font FONT_STATUS = new Font("Comic Sans MS", Font.PLAIN, 14);
 
-    // Define game objects
-    private Board board;         // the game board
-    private State currentState;  // the current state of the game
-    private Seed currentPlayer;  // the current player
-    private JLabel statusBar;    // for displaying status message
+    // === Variabel utama game ===
+    private Board board;         // Objek papan permainan
+    private State currentState;  // Status permainan saat ini
+    private Seed currentPlayer;  // Pemain yang sedang jalan
+    private JLabel statusBar;    // Label status di bawah
     private int scoreCross;
     private int scoreNought;
     private AIPlayer aiPlayer;
@@ -28,56 +29,66 @@ public class GameMain extends JPanel {
     private boolean isAITurn = false;
     private String player1Name = "Player 1";
     private String player2Name = "Player 2";
+    private boolean playerIsDiamond = true;
+    private Seed playerSeed = Seed.CROSS;
+    private Seed aiSeed = Seed.NOUGHT;
 
-    /** Constructor to setup the UI and game components */
-    public GameMain(boolean vsAI, String player1Name, String player2Name) {
+    /**
+     * Konstruktor utama untuk setup UI dan komponen game
+     */
+    public GameMain(boolean vsAI, String player1Name, String player2Name, boolean playerIsDiamond) {
         this.vsAI = vsAI;
         this.player1Name = player1Name;
         this.player2Name = player2Name;
+        this.playerIsDiamond = playerIsDiamond;
+        this.playerSeed = playerIsDiamond ? Seed.CROSS : Seed.NOUGHT;
+        this.aiSeed = playerIsDiamond ? Seed.NOUGHT : Seed.CROSS;
 
-        // This JPanel fires MouseEvent
+        // Listener mouse untuk klik pada papan
         super.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {  // mouse-clicked handler
-                if (isAITurn) return; // Ignore clicks during AI's turn
+            public void mouseClicked(MouseEvent e) {
+                if (isAITurn) return; // Abaikan klik saat giliran AI
 
                 int mouseX = e.getX();
                 int mouseY = e.getY();
-                // Get the row and column clicked
                 int row = mouseY / Cell.SIZE;
                 int col = mouseX / Cell.SIZE;
 
                 if (currentState == State.PLAYING) {
                     if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLS
                             && board.cells[row][col].content == Seed.NO_SEED) {
+                        // Mainkan suara sesuai pemain
                         if (currentPlayer == Seed.CROSS) {
                             SoundEffect.EAT_FOOD.play();
                         } else if (!vsAI) {
                             SoundEffect.EXPLODE.play();
                         }
-                        // Update cells[][] and return the new game state after the move
+                        // Update papan dan cek status game
                         currentState = board.stepGame(currentPlayer, row, col);
                         if (currentState == State.CROSS_WON) {
                             scoreCross++;
                         } else if (currentState == State.NOUGHT_WON) {
                             scoreNought++;
                         }
-                        // Switch player
+                        // Ganti giliran pemain
                         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
                         repaint();
 
-                        if (vsAI && currentPlayer == Seed.NOUGHT && currentState == State.PLAYING) {
+                        // Jika mode AI dan giliran AI
+                        if (vsAI && currentPlayer == aiSeed && currentState == State.PLAYING) {
                             isAITurn = true;
                             Timer timer = new Timer(500, new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     SoundEffect.EXPLODE.play();
                                     int[] move = aiPlayer.move(board);
-                                    currentState = board.stepGame(Seed.NOUGHT, move[0], move[1]);
-                                    if (currentState == State.NOUGHT_WON) {
-                                        scoreNought++;
+                                    currentState = board.stepGame(aiSeed, move[0], move[1]);
+                                    if (currentState == State.NOUGHT_WON || currentState == State.CROSS_WON) {
+                                        if (aiSeed == Seed.CROSS) scoreCross++;
+                                        else scoreNought++;
                                     }
-                                    currentPlayer = Seed.CROSS;
+                                    currentPlayer = playerSeed;
                                     isAITurn = false;
                                     repaint();
                                 }
@@ -87,14 +98,14 @@ public class GameMain extends JPanel {
                         }
                     }
                 } else {
-                     // game over
-                    newGame();  // restart the game
+                    // Jika game selesai, klik untuk mulai ulang
+                    newGame();
                 }
                 repaint();
             }
         });
 
-        // Setup the status bar (JLabel) to display status message
+        // === Status bar di bawah papan ===
         statusBar = new JLabel();
         statusBar.setFont(FONT_STATUS);
         statusBar.setBackground(COLOR_BG_STATUS);
@@ -104,47 +115,74 @@ public class GameMain extends JPanel {
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 12));
 
         super.setLayout(new BorderLayout());
-        super.add(statusBar, BorderLayout.PAGE_END); // same as SOUTH
+        super.add(statusBar, BorderLayout.PAGE_END);
         super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 30));
-        // account for statusBar in height
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
-        // Set up Game
+        // Inisialisasi game
         initGame();
         newGame();
     }
 
-    /** Constructor lama untuk kompatibilitas */
+    /**
+     * Konstruktor lama untuk kompatibilitas (default: PvP, Diamond)
+     */
     public GameMain() {
-        this(false, "Player 1", "Player 2");
+        this(false, "Player 1", "Player 2", true);
     }
 
-    /** Initialize the game (run once) */
+    /**
+     * Inisialisasi objek game (hanya sekali saat awal)
+     * Membuat papan, AI, dan reset skor.
+     */
     public void initGame() {
-        board = new Board();  // allocate the game-board
-        aiPlayer = new AIPlayer(Seed.NOUGHT);
+        board = new Board();  // Membuat papan baru
+        aiPlayer = new AIPlayer(aiSeed); // Membuat AI
         scoreCross = 0;
         scoreNought = 0;
     }
 
-
-
-    /** Reset the game-board contents and the current-state, ready for new game */
+    /**
+     * Reset papan dan status, siap untuk game baru
+     * Mengatur giliran, status, dan jika perlu AI jalan duluan.
+     */
     public void newGame() {
         board.newGame();
-        currentPlayer = Seed.CROSS;    // cross plays first
-        currentState = State.PLAYING;  // ready to play
+        currentPlayer = playerSeed;
+        currentState = State.PLAYING;
+        // Jika AI jalan duluan (player pilih Emerald)
+        if (vsAI && !playerIsDiamond) {
+            isAITurn = true;
+            Timer timer = new Timer(500, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SoundEffect.EXPLODE.play();
+                    int[] move = aiPlayer.move(board);
+                    currentState = board.stepGame(aiSeed, move[0], move[1]);
+                    if (currentState == State.NOUGHT_WON || currentState == State.CROSS_WON) {
+                        if (aiSeed == Seed.CROSS) scoreCross++;
+                        else scoreNought++;
+                    }
+                    currentPlayer = playerSeed;
+                    isAITurn = false;
+                    repaint();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
+        }
     }
 
-    /** Custom painting codes on this JPanel */
+    /**
+     * Custom painting untuk panel utama
+     */
     @Override
-    public void paintComponent(Graphics g) {  // Callback via repaint()
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        setBackground(COLOR_BG); // set its background color
+        setBackground(COLOR_BG);
+        board.paint(g); // Gambar papan
 
-        board.paint(g);  // ask the game board to paint itself
-
-        // Print status-bar message
+        // Tampilkan status di status bar
         String scoreStr = "  |  Score: " + player1Name + " =" + scoreCross + ", " + player2Name + " =" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
@@ -162,7 +200,9 @@ public class GameMain extends JPanel {
         }
     }
 
-    /** Create the menu bar */
+    /**
+     * Membuat menu bar utama
+     */
     public JMenuBar createMenuBar() {
         JMenuBar menuBar  = new JMenuBar();
         JMenu menu = new JMenu("Game");
@@ -197,7 +237,7 @@ public class GameMain extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(GameMain.this,
-                        "Tic-Tac-Toe game implemented by Len, Nico, and Erpan",
+                        "Tic-Tac-Toe game implemented by Len, Nico, dan Erpan",
                         "About",
                         JOptionPane.INFORMATION_MESSAGE);
             }
@@ -207,7 +247,9 @@ public class GameMain extends JPanel {
         return menuBar;
     }
 
-    /** Show a dialog to choose the game mode */
+    /**
+     * Menampilkan dialog pemilihan mode game
+     */
     public void showModeDialog() {
         ModeSelectionDialog dialog = new ModeSelectionDialog(null);
         dialog.setVisible(true);
@@ -216,29 +258,40 @@ public class GameMain extends JPanel {
     }
 
     /**
-     * Show the main game window
+     * Menampilkan window utama game
      */
     public static void showGameWindow(boolean vsAI, String player1Name, String player2Name) {
+        showGameWindow(vsAI, player1Name, player2Name, true);
+    }
+
+    /**
+     * Overload: menerima parameter playerIsDiamond
+     */
+    public static void showGameWindow(boolean vsAI, String player1Name, String player2Name, boolean playerIsDiamond) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame(TITLE);
-                GameMain gameMain = new GameMain(vsAI, player1Name, player2Name);
+                GameMain gameMain = new GameMain(vsAI, player1Name, player2Name, playerIsDiamond);
                 frame.setContentPane(gameMain);
                 frame.setJMenuBar(gameMain.createMenuBar());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
-                frame.setLocationRelativeTo(null); // center the application window
-                frame.setVisible(true);            // show it
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
             }
         });
     }
 
-    // Overload lama untuk kompatibilitas
+    /**
+     * Overload lama untuk kompatibilitas
+     */
     public static void showGameWindow() {
         showGameWindow(false, "Player 1", "Player 2");
     }
 
-    /** The entry "main" method */
+    /**
+     * Entry point utama aplikasi
+     */
     public static void main(String[] args) {
         WelcomePage.showWelcome();
     }

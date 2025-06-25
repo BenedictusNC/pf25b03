@@ -2,96 +2,91 @@ package TicTacToe;
 import java.awt.*;
 import javax.swing.*;
 /**
- * The Board class models the ROWS-by-COLS game board.
+ * Kelas Board mewakili papan permainan Tic Tac Toe (3x3).
+ * Menyimpan array Cell dan logika pengecekan kemenangan.
  */
 public class Board {
-    // Define named constants
-    public static final int ROWS = 3;  // ROWS x COLS cells
+    // Konstanta ukuran dan tampilan
+    public static final int ROWS = 3;
     public static final int COLS = 3;
-    // Define named constants for drawing
-    public static final int CANVAS_WIDTH = Cell.SIZE * COLS;  // the drawing canvas
+    public static final int CANVAS_WIDTH = Cell.SIZE * COLS;
     public static final int CANVAS_HEIGHT = Cell.SIZE * ROWS;
-    public static final int GRID_WIDTH = 8;  // Grid-line's width
-    public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2; // Grid-line's half-width
-    public static final Color COLOR_GRID = new Color(41, 25, 13);;  // grid lines
-    public static final int Y_OFFSET = 1;  // Fine tune for better display
+    public static final int GRID_WIDTH = 8;
+    public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2;
+    public static final Color COLOR_GRID = new Color(41, 25, 13);
+    public static final int Y_OFFSET = 1;
 
     private Image bgImage;
-    // Define properties (package-visible)
-    /** Composes of 2D array of ROWS-by-COLS Cell instances */
+    // Array 2D Cell
     Cell[][] cells;
+    private int winType = -1; // Menyimpan tipe kemenangan (baris/kolom/diagonal)
 
-    /** Constructor to initialize the game board */
+    /**
+     * Konstruktor Board, inisialisasi papan dan gambar background
+     */
     public Board() {
         initGame();
         bgImage = new ImageIcon(getClass().getResource("/image/crafting22.png")).getImage();
     }
 
-    private int winType = -1;
-
-    /** Initialize the game objects (run once) */
+    /**
+     * Inisialisasi array Cell
+     */
     public void initGame() {
-        cells = new Cell[ROWS][COLS]; // allocate the array
+        cells = new Cell[ROWS][COLS];
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
-                // Allocate element of the array
                 cells[row][col] = new Cell(row, col);
-                // Cells are initialized in the constructor
             }
         }
     }
 
-    /** Reset the game board, ready for new game */
+    /**
+     * Reset isi papan untuk game baru
+     */
     public void newGame() {
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
-                cells[row][col].newGame(); // clear the cell content
+                cells[row][col].newGame();
             }
         }
         winType = -1;
     }
 
     /**
-     *  The given player makes a move on (selectedRow, selectedCol).
-     *  Update cells[selectedRow][selectedCol]. Compute and return the
-     *  new game state (PLAYING, DRAW, CROSS_WON, NOUGHT_WON).
+     * Proses langkah pemain dan cek status game
      */
     public State stepGame(Seed player, int selectedRow, int selectedCol) {
         cells[selectedRow][selectedCol].content = player;
-
         // Cek baris
         for (int row = 0; row < ROWS; row++) {
             if (cells[row][0].content == player && cells[row][1].content == player && cells[row][2].content == player) {
-                winType = row;  // 0–2 untuk baris
+                winType = row;
                 SoundEffect.DIE.play();
                 return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
             }
         }
-
         // Cek kolom
         for (int col = 0; col < COLS; col++) {
             if (cells[0][col].content == player && cells[1][col].content == player && cells[2][col].content == player) {
-                winType = 3 + col;  // 3–5 untuk kolom
+                winType = 3 + col;
                 SoundEffect.DIE.play();
                 return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
             }
         }
-
         // Cek diagonal ↘
         if (cells[0][0].content == player && cells[1][1].content == player && cells[2][2].content == player) {
             winType = 6;
             SoundEffect.DIE.play();
             return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
         }
-
         // Cek diagonal ↙
         if (cells[0][2].content == player && cells[1][1].content == player && cells[2][0].content == player) {
             winType = 7;
             SoundEffect.DIE.play();
             return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
         }
-
-        // Cek apakah masih ada cell kosong
+        // Cek cell kosong (jika masih ada, lanjut main)
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
                 if (cells[row][col].content == Seed.NO_SEED) {
@@ -99,46 +94,45 @@ public class Board {
                 }
             }
         }
-
-        winType = -1;  // Tidak ada pemenang
+        winType = -1;
         return State.DRAW;
     }
 
-    /** Check if the given player has won */
+    /**
+     * Cek apakah player menang
+     */
     public boolean hasWon(Seed player) {
-        // Check for 3-in-a-row
+        // Cek baris
         for (int row = 0; row < ROWS; ++row) {
             if (cells[row][0].content == player && cells[row][1].content == player && cells[row][2].content == player) {
                 return true;
             }
         }
-
-        // Check for 3-in-a-column
+        // Cek kolom
         for (int col = 0; col < COLS; ++col) {
             if (cells[0][col].content == player && cells[1][col].content == player && cells[2][col].content == player) {
                 return true;
             }
         }
-
-        // Check for 3-in-a-diagonal
+        // Cek diagonal
         if (cells[0][0].content == player && cells[1][1].content == player && cells[2][2].content == player) {
             return true;
         }
-
-        // Check for 3-in-a-opposite-diagonal
+        // Cek diagonal sebaliknya
         if (cells[0][2].content == player && cells[1][1].content == player && cells[2][0].content == player) {
             return true;
         }
-
         return false;
     }
 
-    /** Paint itself on the graphics canvas, given the Graphics context */
+    /**
+     * Gambar papan, grid, dan highlight kemenangan
+     */
     public void paint(Graphics g) {
         if (bgImage != null) {
             g.drawImage(bgImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, null);
         }
-        // Draw the grid-lines
+        // Gambar grid
         g.setColor(COLOR_GRID);
         for (int row = 1; row < ROWS; ++row) {
             g.fillRoundRect(0, Cell.SIZE * row - GRID_WIDTH_HALF,
@@ -150,18 +144,17 @@ public class Board {
                     GRID_WIDTH, CANVAS_HEIGHT - 1,
                     GRID_WIDTH, GRID_WIDTH);
         }
-
-        // Draw all the cells
+        // Gambar isi cell
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
-                cells[row][col].paint(g);  // ask the cell to paint itself
+                cells[row][col].paint(g);
             }
         }
+        // Highlight garis kemenangan
         if (winType != -1) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.GREEN);
             g2.setStroke(new BasicStroke(6));
-
             int padding = Cell.SIZE / 2;
             int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 

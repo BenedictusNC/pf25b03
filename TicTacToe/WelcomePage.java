@@ -2,8 +2,6 @@ package TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class WelcomePage extends JFrame {
     public WelcomePage() {
@@ -13,9 +11,9 @@ public class WelcomePage extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // === Minecraft-style background panel ===
+        // Membuat panel dengan background custom (gambar welcome)
         JPanel panel = new JPanel() {
-            private Image bgImage = new ImageIcon(getClass().getClassLoader().getResource("image/welcome.png")).getImage();
+            private final Image bgImage = new ImageIcon(getClass().getClassLoader().getResource("image/welcome.png")).getImage();
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -28,15 +26,19 @@ public class WelcomePage extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         panel.add(Box.createVerticalStrut(60));
+
+        // Label judul utama
         JLabel titleLabel = new JLabel("Tic Tac Toe");
         titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
-        titleLabel.setForeground(new Color(60, 68, 68)); // Minecraft dark text
-        titleLabel.setBorder(null); // No border
-        titleLabel.setOpaque(false); // No background
+        titleLabel.setForeground(new Color(216, 216, 216));
+        titleLabel.setBorder(null);
+        titleLabel.setOpaque(false);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titleLabel);
 
         panel.add(Box.createVerticalStrut(40));
+
+        // Tombol untuk memulai permainan
         JButton startButton = new JButton("Start Game");
         startButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         startButton.setBackground(new Color(94, 124, 22));
@@ -45,34 +47,46 @@ public class WelcomePage extends JFrame {
         startButton.setFocusPainted(false);
         startButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Tutup welcome page sebelum dialog mode muncul
-                dispose();
-                UsernameInputDialog usernameDialog = new UsernameInputDialog(null);
-                usernameDialog.setVisible(true);
-                String player1 = usernameDialog.getUsername();
-                if (!usernameDialog.isSubmitted()) return;
-                ModeSelectionDialog dialog = new ModeSelectionDialog(null);
-                dialog.setVisible(true);
-                boolean vsAI = dialog.isVsAI();
-                String player2 = "AI";
-                if (!vsAI) {
-                    UsernameInputDialog usernameDialog2 = new UsernameInputDialog(null);
-                    usernameDialog2.setTitleLabel("Masukkan Nama Player 2");
-                    usernameDialog2.setVisible(true);
-                    player2 = usernameDialog2.getUsername();
-                    if (!usernameDialog2.isSubmitted() || player2.isEmpty()) player2 = "Player 2";
-                }
-                GameMain.showGameWindow(vsAI, player1, player2);
+        // Event klik tombol start: buka dialog input nama, mode, dan karakter
+        startButton.addActionListener(e -> {
+            // Tutup welcome page sebelum dialog mode muncul
+            dispose();
+            // Dialog input nama player 1
+            UsernameInputDialog usernameDialog = new UsernameInputDialog(null);
+            usernameDialog.setVisible(true);
+            String player1 = usernameDialog.getUsername();
+            if (!usernameDialog.isSubmitted()) return;
+
+            // Dialog pemilihan mode (vs AI atau PvP)
+            ModeSelectionDialog modeDialog = new ModeSelectionDialog(null);
+            modeDialog.setVisible(true);
+            boolean vsAI = modeDialog.isVsAI();
+            String player2 = "AI";
+            boolean playerIsDiamond = true;
+
+            if (!vsAI) {
+                // Jika PvP, input nama player 2
+                UsernameInputDialog usernameDialog2 = new UsernameInputDialog(null);
+                usernameDialog2.setTitleLabel("Masukkan Nama Player 2");
+                usernameDialog2.setVisible(true);
+                player2 = usernameDialog2.getUsername();
+                if (!usernameDialog2.isSubmitted() || player2.isEmpty()) player2 = "Player 2";
+            } else {
+                // Jika lawan AI, pilih karakter (Diamond/Emerald)
+                ChooseSeedDialog chooseSeedDialog = new ChooseSeedDialog(null);
+                chooseSeedDialog.setVisible(true);
+                if (!chooseSeedDialog.isSubmitted()) return;
+                playerIsDiamond = chooseSeedDialog.isDiamond();
             }
+            // Menampilkan window utama game
+            GameMain.showGameWindow(vsAI, player1, player2, playerIsDiamond);
         });
         panel.add(startButton);
 
         setContentPane(panel);
     }
 
+    // Menampilkan halaman welcome secara thread-safe
     public static void showWelcome() {
         SwingUtilities.invokeLater(() -> {
             WelcomePage welcome = new WelcomePage();

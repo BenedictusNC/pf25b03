@@ -1,36 +1,39 @@
 package TicTacToe;
 import java.awt.*;
 /**
- * The Cell class models each cell of the game board.
+ * Kelas Cell mewakili satu kotak pada papan Tic Tac Toe.
+ * Menyimpan posisi dan isi (CROSS, NOUGHT, atau kosong).
  */
 public class Cell {
-    // Define named constants for drawing
-    public static final int SIZE = 120; // cell width/height (square)
-    // Symbols (cross/nought) are displayed inside a cell, with padding from border
+    // Konstanta ukuran dan padding
+    public static final int SIZE = 120; // ukuran kotak
     public static final int PADDING = SIZE / 5;
     public static final int SEED_SIZE = SIZE - PADDING * 2;
 
-    // Define properties (package-visible)
-    /** Content of this cell (Seed.EMPTY, Seed.CROSS, or Seed.NOUGHT) */
+    // Isi cell (CROSS, NOUGHT, atau NO_SEED)
     Seed content;
-    /** Row and column of this cell */
     int row, col;
 
-    /** Constructor to initialize this cell with the specified row and col */
+    /**
+     * Konstruktor Cell
+     */
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;
         this.content = Seed.NO_SEED;
     }
 
-    /** Reset this cell's content to EMPTY, ready for new game */
+    /**
+     * Reset isi cell menjadi kosong
+     */
     public void newGame() {
         content = Seed.NO_SEED;
     }
 
-    /** Paint itself on the graphics canvas, given the Graphics context */
+    /**
+     * Gambar isi cell (jika ada) pada canvas
+     */
     public void paint(Graphics g) {
-        // Draw the Seed if it is not empty
         int x1 = col * SIZE + PADDING;
         int y1 = row * SIZE + PADDING;
         if (content == Seed.CROSS || content == Seed.NOUGHT) {

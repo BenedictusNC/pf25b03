@@ -26,7 +26,7 @@ public class ModeSelectionDialog extends JDialog {
             System.err.println("BGM load error: " + e.getMessage());
         }
 
-        // === Custom panel with background image ===
+        // === Panel background custom dengan gambar ===
         JPanel bgPanel = new JPanel() {
             private Image bgImage = new ImageIcon(
                     getClass().getClassLoader().getResource("image/menu_bg.png")
@@ -43,20 +43,23 @@ public class ModeSelectionDialog extends JDialog {
         bgPanel.setLayout(new BorderLayout());
         setContentPane(bgPanel);
 
-        // === Title label ===
+        // === Label judul dialog ===
         JLabel title = new JLabel("Tic Tac Toe", JLabel.CENTER);
         title.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
         title.setForeground(Color.WHITE);
         title.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
 
-        // === Button panel ===
+        // === Panel tombol pilihan mode ===
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         buttonPanel.setOpaque(false);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 20, 50));
 
+        // Tombol mode PvP
         JButton pvpBtn = createTextButton("Player vs Player");
+        // Tombol mode vs AI
         JButton aiBtn = createTextButton("Player vs AI");
 
+        // Event klik PvP
         pvpBtn.addActionListener(e -> {
             vsAI = false;
             SoundEffect.MENU.play();
@@ -64,6 +67,7 @@ public class ModeSelectionDialog extends JDialog {
             dispose();
         });
 
+        // Event klik AI
         aiBtn.addActionListener(e -> {
             vsAI = true;
             SoundEffect.MENU.play();
@@ -78,6 +82,7 @@ public class ModeSelectionDialog extends JDialog {
         bgPanel.add(buttonPanel, BorderLayout.CENTER);
     }
 
+    // Membuat tombol dengan style khusus
     private JButton createTextButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
@@ -91,6 +96,7 @@ public class ModeSelectionDialog extends JDialog {
         return button;
     }
 
+    // Stop background music saat dialog ditutup
     private void stopMusic() {
         if (bgmClip != null && bgmClip.isRunning()) {
             bgmClip.stop();
@@ -98,6 +104,7 @@ public class ModeSelectionDialog extends JDialog {
         }
     }
 
+    // Cek apakah mode vs AI
     public boolean isVsAI() {
         return vsAI;
     }

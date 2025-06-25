@@ -11,7 +11,7 @@ public class UsernameInputDialog extends JDialog {
     private Clip bgmClip;
     private JTextField usernameField;
     private boolean submitted = false;
-    private JLabel title; // Make title a field
+    private JLabel title; // Label judul dialog
 
     public UsernameInputDialog(JFrame parent) {
         super(parent, "Input Username", true);
@@ -30,7 +30,7 @@ public class UsernameInputDialog extends JDialog {
             System.err.println("BGM load error: " + e.getMessage());
         }
 
-        // === Custom panel with background image ===
+        // === Custom panel dengan background gambar ===
         JPanel bgPanel = new JPanel() {
             private Image bgImage = new ImageIcon(
                     getClass().getClassLoader().getResource("image/menu_bg.png")
@@ -47,7 +47,7 @@ public class UsernameInputDialog extends JDialog {
         bgPanel.setLayout(new GridBagLayout());
         setContentPane(bgPanel);
 
-        // === Main content panel with rounded background ===
+        // === Panel utama dengan background rounded transparan ===
         JPanel contentPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -63,13 +63,13 @@ public class UsernameInputDialog extends JDialog {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(18, 24, 18, 24));
 
-        // === Title label with drop shadow ===
+        // === Label judul dengan efek drop shadow ===
         title = new JLabel("Masukkan Nama Player 1", JLabel.CENTER) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                // Draw drop shadow
+                // Drop shadow
                 g2.setColor(new Color(0, 0, 0, 120));
                 g2.setFont(getFont());
                 g2.drawString(getText(), 3, getHeight() - 13 + 2);
@@ -86,7 +86,7 @@ public class UsernameInputDialog extends JDialog {
         contentPanel.add(title);
         contentPanel.add(Box.createVerticalStrut(18));
 
-        // === Input panel ===
+        // === Panel input username ===
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(false);
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -100,6 +100,7 @@ public class UsernameInputDialog extends JDialog {
         usernameField.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(51, 0, 0)));
         inputPanel.add(usernameField, BorderLayout.CENTER);
 
+        // Tombol submit username
         JButton submitBtn = new JButton("OK");
         submitBtn.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         submitBtn.setBackground(Color.WHITE);
@@ -112,12 +113,14 @@ public class UsernameInputDialog extends JDialog {
         submitBtn.addActionListener(e -> submit());
         inputPanel.add(submitBtn, BorderLayout.SOUTH);
 
+        // Enter pada textfield juga submit
         usernameField.addActionListener(e -> submit());
 
         contentPanel.add(inputPanel);
         bgPanel.add(contentPanel);
     }
 
+    // Proses submit username
     private void submit() {
         username = usernameField.getText().trim();
         if (username.isEmpty()) {
@@ -128,6 +131,7 @@ public class UsernameInputDialog extends JDialog {
         dispose();
     }
 
+    // Stop background music saat dialog ditutup
     private void stopMusic() {
         if (bgmClip != null && bgmClip.isRunning()) {
             bgmClip.stop();
@@ -135,14 +139,17 @@ public class UsernameInputDialog extends JDialog {
         }
     }
 
+    // Getter username
     public String getUsername() {
         return username;
     }
 
+    // Cek apakah sudah submit
     public boolean isSubmitted() {
         return submitted;
     }
 
+    // Ubah judul dialog
     public void setTitleLabel(String text) {
         title.setText(text);
     }
