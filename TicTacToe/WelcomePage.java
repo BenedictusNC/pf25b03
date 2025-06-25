@@ -11,7 +11,6 @@ public class WelcomePage extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Membuat panel dengan background custom (gambar welcome)
         JPanel panel = new JPanel() {
             private final Image bgImage = new ImageIcon(getClass().getClassLoader().getResource("image/welcome.png")).getImage();
             @Override
@@ -27,7 +26,6 @@ public class WelcomePage extends JFrame {
 
         panel.add(Box.createVerticalStrut(60));
 
-        // Label judul utama
         JLabel titleLabel = new JLabel("Tic Tac Toe");
         titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 36));
         titleLabel.setForeground(new Color(216, 216, 216));
@@ -47,17 +45,13 @@ public class WelcomePage extends JFrame {
         startButton.setFocusPainted(false);
         startButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // Event klik tombol start: buka dialog input nama, mode, dan karakter
         startButton.addActionListener(e -> {
-            // Tutup welcome page sebelum dialog mode muncul
             dispose();
-            // Dialog input nama player 1
             UsernameInputDialog usernameDialog = new UsernameInputDialog(null);
             usernameDialog.setVisible(true);
             String player1 = usernameDialog.getUsername();
             if (!usernameDialog.isSubmitted()) return;
 
-            // Dialog pemilihan mode (vs AI atau PvP)
             ModeSelectionDialog modeDialog = new ModeSelectionDialog(null);
             modeDialog.setVisible(true);
             if (!modeDialog.isSubmitted()) return;
@@ -66,7 +60,6 @@ public class WelcomePage extends JFrame {
             boolean playerIsDiamond = true;
 
             if (!vsAI) {
-                // Jika PvP, input nama player 2
                 UsernameInputDialog usernameDialog2 = new UsernameInputDialog(null);
                 usernameDialog2.setTitleLabel("Masukkan Nama Player 2");
                 usernameDialog2.setVisible(true);
@@ -74,13 +67,11 @@ public class WelcomePage extends JFrame {
                 player2 = usernameDialog2.getUsername();
                 if (player2.isEmpty()) player2 = "Player 2";
             } else {
-                // Jika lawan AI, pilih karakter (Diamond/Emerald)
                 ChooseSeedDialog chooseSeedDialog = new ChooseSeedDialog(null);
                 chooseSeedDialog.setVisible(true);
                 if (!chooseSeedDialog.isSubmitted()) return;
                 playerIsDiamond = chooseSeedDialog.isDiamond();
             }
-            // Menampilkan window utama game
             GameMain.showGameWindow(vsAI, player1, player2, playerIsDiamond);
         });
         panel.add(startButton);
@@ -88,7 +79,6 @@ public class WelcomePage extends JFrame {
         setContentPane(panel);
     }
 
-    // Menampilkan halaman welcome secara thread-safe
     public static void showWelcome() {
         SwingUtilities.invokeLater(() -> {
             WelcomePage welcome = new WelcomePage();
