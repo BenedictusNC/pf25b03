@@ -55,18 +55,15 @@ public class GameMain extends JPanel {
                         } else if (!vsAI) {
                             SoundEffect.EXPLODE.play();
                         }
-                        // Update papan dan cek status game
                         currentState = board.stepGame(currentPlayer, row, col);
                         if (currentState == State.CROSS_WON) {
                             scoreCross++;
                         } else if (currentState == State.NOUGHT_WON) {
                             scoreNought++;
                         }
-                        // Ganti giliran pemain
                         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
                         repaint();
 
-                        // Jika mode AI dan giliran AI
                         if (vsAI && currentPlayer == aiSeed && currentState == State.PLAYING) {
                             isAITurn = true;
                             Timer timer = new Timer(500, new ActionListener() {
@@ -110,22 +107,14 @@ public class GameMain extends JPanel {
         super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 30));
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
-        // Inisialisasi game
         initGame();
         newGame();
     }
 
-    /**
-     * Konstruktor lama untuk kompatibilitas (default: PvP, Diamond)
-     */
     public GameMain() {
         this(false, "Player 1", "Player 2", true);
     }
 
-    /**
-     * Inisialisasi objek game (hanya sekali saat awal)
-     * Membuat papan, AI, dan reset skor.
-     */
     public void initGame() {
         board = new Board();  // Membuat papan baru
         aiPlayer = new AIPlayer(aiSeed); // Membuat AI
@@ -133,15 +122,10 @@ public class GameMain extends JPanel {
         scoreNought = 0;
     }
 
-    /**
-     * Reset papan dan status, siap untuk game baru
-     * Mengatur giliran, status, dan jika perlu AI jalan duluan.
-     */
     public void newGame() {
         board.newGame();
         currentPlayer = playerSeed;
         currentState = State.PLAYING;
-        // Jika AI jalan duluan (player pilih Emerald)
         if (vsAI && !playerIsDiamond) {
             isAITurn = true;
             Timer timer = new Timer(500, new ActionListener() {
@@ -164,16 +148,12 @@ public class GameMain extends JPanel {
         }
     }
 
-    /**
-     * Custom painting untuk panel utama
-     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         setBackground(COLOR_BG);
-        board.paint(g); // Gambar papan
+        board.paint(g);
 
-        // Tampilkan status di status bar
         String scoreStr = "  |  Score: " + player1Name + " :" + scoreCross + ", " + player2Name + " :" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
@@ -191,9 +171,6 @@ public class GameMain extends JPanel {
         }
     }
 
-    /**
-     * Membuat menu bar utama
-     */
     public JMenuBar createMenuBar() {
         JMenuBar menuBar  = new JMenuBar();
         JMenu menu = new JMenu("Game");
@@ -279,9 +256,6 @@ public class GameMain extends JPanel {
         return menuBar;
     }
 
-    /**
-     * Menampilkan dialog pemilihan mode game
-     */
     public void showModeDialog() {
         ModeSelectionDialog dialog = new ModeSelectionDialog(null);
         dialog.setVisible(true);
@@ -289,16 +263,10 @@ public class GameMain extends JPanel {
         SoundEffect.MENU.play();
     }
 
-    /**
-     * Menampilkan window utama game
-     */
     public static void showGameWindow(boolean vsAI, String player1Name, String player2Name) {
         showGameWindow(vsAI, player1Name, player2Name, true);
     }
 
-    /**
-     * Overload: menerima parameter playerIsDiamond
-     */
     public static void showGameWindow(boolean vsAI, String player1Name, String player2Name, boolean playerIsDiamond) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -314,16 +282,9 @@ public class GameMain extends JPanel {
         });
     }
 
-    /**
-     * Overload lama untuk kompatibilitas
-     */
     public static void showGameWindow() {
         showGameWindow(false, "Player 1", "Player 2");
     }
-
-    /**
-     * Entry point utama aplikasi
-     */
     public static void main(String[] args) {
         WelcomePage.showWelcome();
     }
