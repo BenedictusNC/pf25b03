@@ -26,9 +26,14 @@ public class GameMain extends JPanel {
     private AIPlayer aiPlayer;
     private boolean vsAI = false;
     private boolean isAITurn = false;
+    private String player1Name = "Player 1";
+    private String player2Name = "Player 2";
 
     /** Constructor to setup the UI and game components */
-    public GameMain() {
+    public GameMain(boolean vsAI, String player1Name, String player2Name) {
+        this.vsAI = vsAI;
+        this.player1Name = player1Name;
+        this.player2Name = player2Name;
 
         // This JPanel fires MouseEvent
         super.addMouseListener(new MouseAdapter() {
@@ -109,6 +114,11 @@ public class GameMain extends JPanel {
         newGame();
     }
 
+    /** Constructor lama untuk kompatibilitas */
+    public GameMain() {
+        this(false, "Player 1", "Player 2");
+    }
+
     /** Initialize the game (run once) */
     public void initGame() {
         board = new Board();  // allocate the game-board
@@ -135,20 +145,20 @@ public class GameMain extends JPanel {
         board.paint(g);  // ask the game board to paint itself
 
         // Print status-bar message
-        // Print status-bar message
-        String scoreStr = "  |  Score: D =" + scoreCross + ", E =" + scoreNought;
+        String scoreStr = "  |  Score: " + player1Name + " =" + scoreCross + ", " + player2Name + " =" + scoreNought;
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
-            statusBar.setText(((currentPlayer == Seed.CROSS) ? "D's Turn" : "E's Turn") + scoreStr);
+            String turnName = (currentPlayer == Seed.CROSS) ? player1Name : player2Name;
+            statusBar.setText(turnName + "'s Turn" + scoreStr);
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click to play again." + scoreStr);
         } else if (currentState == State.CROSS_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("Diamond Won! Click to play again." + scoreStr);
+            statusBar.setText(player1Name + " Won! Click to play again." + scoreStr);
         } else if (currentState == State.NOUGHT_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("Emerald Won! Click to play again." + scoreStr);
+            statusBar.setText(player2Name + " Won! Click to play again." + scoreStr);
         }
     }
 
@@ -208,12 +218,11 @@ public class GameMain extends JPanel {
     /**
      * Show the main game window
      */
-    public static void showGameWindow(boolean vsAI) {
+    public static void showGameWindow(boolean vsAI, String player1Name, String player2Name) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame(TITLE);
-                GameMain gameMain = new GameMain();
-                gameMain.vsAI = vsAI;
+                GameMain gameMain = new GameMain(vsAI, player1Name, player2Name);
                 frame.setContentPane(gameMain);
                 frame.setJMenuBar(gameMain.createMenuBar());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -226,7 +235,7 @@ public class GameMain extends JPanel {
 
     // Overload lama untuk kompatibilitas
     public static void showGameWindow() {
-        showGameWindow(false);
+        showGameWindow(false, "Player 1", "Player 2");
     }
 
     /** The entry "main" method */

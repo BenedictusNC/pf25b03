@@ -50,9 +50,22 @@ public class WelcomePage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Tutup welcome page sebelum dialog mode muncul
                 dispose();
+                UsernameInputDialog usernameDialog = new UsernameInputDialog(null);
+                usernameDialog.setVisible(true);
+                String player1 = usernameDialog.getUsername();
+                if (!usernameDialog.isSubmitted()) return;
                 ModeSelectionDialog dialog = new ModeSelectionDialog(null);
                 dialog.setVisible(true);
-                GameMain.showGameWindow(dialog.isVsAI());
+                boolean vsAI = dialog.isVsAI();
+                String player2 = "AI";
+                if (!vsAI) {
+                    UsernameInputDialog usernameDialog2 = new UsernameInputDialog(null);
+                    usernameDialog2.setTitleLabel("Masukkan Nama Player 2");
+                    usernameDialog2.setVisible(true);
+                    player2 = usernameDialog2.getUsername();
+                    if (!usernameDialog2.isSubmitted() || player2.isEmpty()) player2 = "Player 2";
+                }
+                GameMain.showGameWindow(vsAI, player1, player2);
             }
         });
         panel.add(startButton);
