@@ -4,24 +4,18 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-/**
- * Tic-Tac-Toe: Versi grafis dua pemain dengan desain OOP yang lebih baik.
- * Kelas Board dan Cell dipisahkan dalam file terpisah.
- */
 public class GameMain extends JPanel {
-    private static final long serialVersionUID = 1L; // Untuk mencegah warning serializable
+    private static final long serialVersionUID = 1L;
 
-    // === Konstanta untuk tampilan grafis ===
     public static final String TITLE = "Tic Tac Toe";
     public static final Color COLOR_BG = new Color(247, 202, 139);
     public static final Color COLOR_BG_STATUS = new Color(247, 202, 139);
     public static final Font FONT_STATUS = new Font("Comic Sans MS", Font.PLAIN, 14);
 
-    // === Variabel utama game ===
-    private Board board;         // Objek papan permainan
-    private State currentState;  // Status permainan saat ini
-    private Seed currentPlayer;  // Pemain yang sedang jalan
-    private JLabel statusBar;    // Label status di bawah
+    private Board board;
+    private State currentState;
+    private Seed currentPlayer;
+    private JLabel statusBar;
     private int scoreCross;
     private int scoreNought;
     private AIPlayer aiPlayer;
@@ -33,9 +27,7 @@ public class GameMain extends JPanel {
     private Seed playerSeed = Seed.CROSS;
     private Seed aiSeed = Seed.NOUGHT;
 
-    /**
-     * Konstruktor utama untuk setup UI dan komponen game
-     */
+
     public GameMain(boolean vsAI, String player1Name, String player2Name, boolean playerIsDiamond) {
         this.vsAI = vsAI;
         this.player1Name = player1Name;
@@ -44,11 +36,10 @@ public class GameMain extends JPanel {
         this.playerSeed = playerIsDiamond ? Seed.CROSS : Seed.NOUGHT;
         this.aiSeed = playerIsDiamond ? Seed.NOUGHT : Seed.CROSS;
 
-        // Listener mouse untuk klik pada papan
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (isAITurn) return; // Abaikan klik saat giliran AI
+                if (isAITurn) return;
 
                 int mouseX = e.getX();
                 int mouseY = e.getY();
